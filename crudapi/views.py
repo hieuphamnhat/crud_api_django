@@ -51,7 +51,8 @@ def company_list(request):
                 'companies': companies_serializer.data,
                 'error': ""
             }
-            return JsonResponse(response, status=status.HTTP_200_OK)
+            #return JsonResponse(response, status=status.HTTP_200_OK)
+            return JsonResponse(companies_serializer.data, safe=False)
         except: 
             error = {
                 'message': "Fail! -> can NOT get all the companies List. Please check again!",
