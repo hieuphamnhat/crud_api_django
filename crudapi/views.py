@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from rest_framework.decorators import api_view
@@ -7,7 +7,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 from .models import Company
 from .serializers import CompanySerializer
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
@@ -111,3 +111,26 @@ def company_detail(request, pk):
                 'error': ""
             }
         return JsonResponse(response)
+
+def create_session(request):
+    request.session['name'] = 'username'
+    request.session['password'] = 'pwd123'
+    return HttpResponse("<h1>dataflair<br> the session is set</h1>")
+
+def access_session(request):
+    response = "<h1>Welcome to Sessions of dataflair</h1><br>"
+    if request.session.get('name'):
+        response += "Name: {0} <br>".format(request.session.get('name'))
+    if request.session.get('password'):
+        response += "Password: {0} <br>".format(request.session.get('password'))
+        return HttpResponse(response)
+    else:
+        return redirect('create/')
+
+def delete_session(request):
+    try:
+        del request.session['name']
+        del request.session['password']
+    except KeyError:
+        pass
+    return HttpResponse("<h1>dataflair<br>Session Data cleared</h1>")
