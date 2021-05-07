@@ -9,6 +9,9 @@ from .models import Company
 from .serializers import CompanySerializer
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from . import forms
+from tdtDjangoAPi.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -134,3 +137,14 @@ def delete_session(request):
     except KeyError:
         pass
     return HttpResponse("<h1>dataflair<br>Session Data cleared</h1>")
+
+def subscribe(request):
+    sub = forms.Subscribe()
+    if request.method == 'POST':
+        sub = forms.Subscribe(request.POST)
+        subject = 'Welcome to DataFlair'
+        message = 'Hope you are enjoying my messages'
+        recepient = str(sub['Email'].value())
+        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+        return render(request, 'crudapi/success.html', {'recepient': recepient})
+    return render(request, 'crudapi/index.html', {'form':sub})
