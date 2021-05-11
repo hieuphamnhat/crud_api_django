@@ -7,7 +7,8 @@ class Company(models.Model):
     date = models.DateField(null=True)
 
 #relationships
-#many-to-many
+
+#1. many-to-many
 class Publication(models.Model):
     title = models.CharField(max_length=30)
     
@@ -17,7 +18,7 @@ class Publication(models.Model):
 class Article(models.Model):
     headline = models.CharField(max_length=100)
     publication = models.ManyToManyField(Publication)
-
+    
     def __str__(self):
         return self.headline
 
@@ -34,3 +35,20 @@ class Membership(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     date_joined = models.DateField()
     invite_reason = models.CharField(max_length=64)
+
+#2. Many-to-one
+class Reporter(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField()
+
+    def __str__(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
+class Reports(models.Model):
+    headline = models.CharField(max_length=100)
+    reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.headline
+
+    
