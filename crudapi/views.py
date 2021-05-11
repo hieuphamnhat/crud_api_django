@@ -138,6 +138,7 @@ def delete_session(request):
         pass
     return HttpResponse("<h1>dataflair<br>Session Data cleared</h1>")
 
+#email
 def subscribe(request):
     sub = forms.Subscribe()
     if request.method == 'POST':
@@ -148,3 +149,5 @@ def subscribe(request):
         send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
         return render(request, 'crudapi/success.html', {'recepient': recepient})
     return render(request, 'crudapi/index.html', {'form':sub})
+
+#advance model
