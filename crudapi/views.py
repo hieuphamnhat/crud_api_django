@@ -10,8 +10,11 @@ from .serializers import CompanySerializer
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from . import forms
+from crudapi.forms import RegisterForm
 from tdtDjangoAPi.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
+from django.views import View
+from django.contrib.auth.models import User
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -150,4 +153,17 @@ def subscribe(request):
         return render(request, 'crudapi/success.html', {'recepient': recepient})
     return render(request, 'crudapi/index.html', {'form':sub})
 
-#advance model
+#register
+class registerUser(View):
+    def get(self, request):
+        rf = RegisterForm()
+        return render(request, 'crudapi/register.html', {'rf': rf})
+
+    def post(self, request):
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        user = User.objects.create_user(username, email, password)
+        user.save()
+        return HttpResponse("Regist successfully")
+        
