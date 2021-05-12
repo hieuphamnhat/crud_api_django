@@ -15,7 +15,8 @@ from tdtDjangoAPi.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from django.views import View
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -174,13 +175,26 @@ class loginUser(View):
         return render(request, 'crudapi/login.html', {'lf': lf})
 
     def post(self, request):
+        lf = LoginForm()
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
+        start_login = "Can't Login. Pls retry!"
         status_login = False
         if user is not None:
             login(request, user)
-            return HttpResponse("Login successfully")
+            return render(request, 'crudapi/logined.html', {'status_login': "Login successfully!"})
         else:
-            return HttpResponse("Can't Login successfully")
-        
+            status_login = True
+            return render(request, 'crudapi/login.html', {'status_login': status_login, 'start_login': start_login, 'lf': lf})
+
+def logoutUser(request):
+    start_login = 'Login Pls!'
+    logout(request)
+    status_login = True
+    lf = LoginForm()
+    return render(request, 'crudapi/login.html', {'status_login': status_login, 'start_login': start_login, 'lf': lf})
+
+#@login_required
+#def my_view(request):
+ 

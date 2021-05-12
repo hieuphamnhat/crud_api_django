@@ -5,14 +5,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-    {% if status_login %}
-        {{ start_login }}
-    {% endif %}
-    <form action="{% url 'crudapi:loginUser' %}" method="POST">
-        {% csrf_token %}
-        {{lf.as_p}}
-        <br>
-        <input type="submit"></input>
-    </form>
+    {{status_login}}
+    <p> <a href="{% url 'crudapi:logoutUser' %}">Log out</a> </p>
 </body>
 </html>
