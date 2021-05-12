@@ -10,11 +10,12 @@ from .serializers import CompanySerializer
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from . import forms
-from crudapi.forms import RegisterForm
+from crudapi.forms import RegisterForm, LoginForm
 from tdtDjangoAPi.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from django.views import View
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -166,4 +167,20 @@ class registerUser(View):
         user = User.objects.create_user(username, email, password)
         user.save()
         return HttpResponse("Regist successfully")
+
+class loginUser(View):
+    def get(self, request):
+        lf = LoginForm()
+        return render(request, 'crudapi/login.html', {'lf': lf})
+
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        status_login = False
+        if user is not None:
+            login(request, user)
+            return HttpResponse("Login successfully")
+        else:
+            return HttpResponse("Can't Login successfully")
         

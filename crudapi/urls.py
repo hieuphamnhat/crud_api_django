@@ -9,5 +9,6 @@ urlpatterns = [
     path('access/', views.access_session),
     path('delete/', views.delete_session),
     path('subscribe/', views.subscribe, name = 'subscribe'),
-    path('register/', views.registerUser.as_view(), name='registerUser')
+    path('register/', views.registerUser.as_view(), name='registerUser'),
+    path('login/', views.loginUser.as_view(), name='loginUser')
 ]
