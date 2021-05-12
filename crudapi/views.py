@@ -195,6 +195,6 @@ def logoutUser(request):
     lf = LoginForm()
     return render(request, 'crudapi/login.html', {'status_login': status_login, 'start_login': start_login, 'lf': lf})
 
-#@login_required
+#@login_required(login_url='/accounts/login/')
 #def my_view(request):
  
