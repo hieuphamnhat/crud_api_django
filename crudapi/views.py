@@ -70,12 +70,12 @@ def company_list(request):
             return JsonResponse(error, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['PUT', 'DELETE'])
-def company_detail(request, pk):
+def company_detail(request, id=0):
     try: 
-        company = Company.objects.get(pk=pk)
+        company = Company.objects.all()
     except Company.DoesNotExist:
         exceptionError = {
-            'message': "Not found a companies with id = %s!" % pk,
+            'message': "Not found a companies with id = %s!",
             'companies': "[]",
             'error': "404 Code - Not Found!"
         }
@@ -84,37 +84,38 @@ def company_detail(request, pk):
     if request.method == 'PUT':
         try:
             company_data = JSONParser().parse(request)
+            company = Company.objects.get(id=company_data['id'])
             company_serializer = CompanySerializer(company, data=company_data)
 
             if company_serializer.is_valid(): 
                 company_serializer.save()
                 response = {
-                    'message': "Successfully Update a Company with id = %s" % pk,
+                    'message': "Successfully Update a Company with id = %s" % company_data['id'],
                     'companies': [company_serializer.data],
                     'error': ""
                 }                
                 return JsonResponse(response) 
 
             response = {
-                    'message': "Fail to Update a Company with id = %s" % pk,
+                    'message': "Fail to Update a Company with id = %s" % company_data['id'],
                     'companies': [company_serializer.data],
                     'error': company_serializer.errors
                 }
             return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST) 
         except:
             exceptionError = {
-                'message': "Fail to update a Company with id = %s!" % pk,
+                'message': "Fail to update a Company with id = %s!" % company_data['id'],
                 'companies': [company_serializer.data],
                 'error': "Internal Error!"
             }
             return JsonResponse(exceptionError, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
  
     elif request.method == 'DELETE':
-        print("Deleting a Company with id=%s"%pk)
-        company.delete() 
+        company = Company.objects.get(id=id)
+        company.delete()
         company_serializer = CompanySerializer(company) 
         response = {
-                'message': "Successfully Delete a company with id = %s" % pk,
+                'message': "Successfully Delete a company with id = %s" % id,
                 'companies': [company_serializer.data],
                 'error': ""
             }
